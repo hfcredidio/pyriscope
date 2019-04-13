@@ -104,3 +104,9 @@ make_tag_parser!(atequal, "@=", Token::Atequal);
 make_tag_parser!(rarrow, "->", Token::Rarrow);
 make_tag_parser!(ellipsis, "...", Token::Ellipsis);
 make_tag_parser!(colonequal, ":=", Token::Colonequal);
+
+make_tag_parser!(as_, "as", Token::Name);
+make_tag_parser!(import, "import", Token::Name);
+make_tag_parser!(from, "from", Token::Name);
+make_tag_parser!(global, "global", Token::Name);
+make_tag_parser!(nonlocal, "nonlocal", Token::Name);
