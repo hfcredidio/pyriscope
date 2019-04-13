@@ -1,3 +1,8 @@
+use nom::types::CompleteStr;
+use nom_locate::LocatedSpan;
+
+pub type Span<'a> = LocatedSpan<CompleteStr<'a>>;
+
 #[derive(Debug)]
 pub enum Token {
     Endmarker,
