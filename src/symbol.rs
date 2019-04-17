@@ -193,3 +193,43 @@ named!(trailer_attr<Span, Node>, ws!(do_parse!(
 )));
 
 named!(pub trailer<Span, Node>, alt!(trailer_args | trailer_index | trailer_attr));
+
+named!(pub subscriptlist<Span, Node>, ws!(do_parse!(
+    first: subscript >>
+    rest: many0!(tuple!(comma, subscript)) >>
+    (Node::NonTerminal {
+        sym: Symbol::Subscriptlist,
+        children: gvec![first, rest],
+    })
+)));
+
+named!(subscript_test<Span, Node>, map!(
+    test,
+    |res| Node::NonTerminal{
+        sym: Symbol::Subscript,
+        children: gvec![res],
+    }
+));
+
+named!(subscript_slice<Span, Node>, ws!(do_parse!(
+    first: opt!(test) >>
+    sep: colon >>
+    second: opt!(test) >>
+    slice: opt!(sliceop) >>
+    (Node::NonTerminal {
+        sym: Symbol::Subscript,
+        children: gvec![first, sep, second, slice],
+    })
+)));
+
+named!(pub subscript<Span, Node>, alt!(subscript_test | subscript_slice));
+
+
+named!(pub sliceop<Span, Node>, ws!(do_parse!(
+    sep: colon >>
+    value: opt!(test) >>
+    (Node::NonTerminal {
+        sym: Symbol::Sliceop,
+        children: gvec![sep, value],
+    })
+)));
