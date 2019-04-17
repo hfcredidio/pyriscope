@@ -110,3 +110,6 @@ make_tag_parser!(import, "import", Token::Name);
 make_tag_parser!(from, "from", Token::Name);
 make_tag_parser!(global, "global", Token::Name);
 make_tag_parser!(nonlocal, "nonlocal", Token::Name);
+make_tag_parser!(none, "None", Token::Name);
+make_tag_parser!(true_, "True", Token::Name);
+make_tag_parser!(false_, "False", Token::Name);

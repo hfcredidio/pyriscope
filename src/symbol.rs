@@ -99,3 +99,56 @@ named!(pub nonlocal_stmt<Span, Node>, ws!(do_parse!(
         children: gvec![nonlocal_, first, rest],
     })
 )));
+
+named!(atom_generator<Span, Node>, ws!(do_parse!(
+    left_par: lpar >>
+    middle: alt!(yield_expr, testlist_comp) >>
+    right_par: rpar >>
+    (Node::NonTerminal {
+        sym: Symbol::Atom,
+        children: gvec![left_par, middle, right_par],
+    })
+)));
+
+
+named!(atom_listcomprehension<Span, Node>, ws!(do_parse!(
+    left_sqb: lsqb >>
+    middle: testlist_comp >>
+    right_sqb: rsqb >>
+    (Node::NonTerminal {
+        sym: Symbol::Atom,
+        children: gvec![left_sqb, middle, right_sqb],
+    })
+)));
+
+
+named!(atom_dictmaker<Span, Node>, ws!(do_parse!(
+    left_brace: lbrace >>
+    middle: dictorsetmaker >>
+    right_brace: rbrace >>
+    (Node::NonTerminal {
+        sym: Symbol::Atom,
+        children: gvec![left_brace, middle, right_brace],
+    })
+)));
+
+
+named!(atom_strings<Span, Node>, ws!(do_parse!(
+    strings: many1!(string) >>
+    (Node::NonTerminal {
+        sym: Symbol::Atom,
+        children: gvec![strings],
+    })
+)));
+
+named!(atom_rest<Span, Node>, ws!(do_parse!(
+    value: alt!(
+        name | number | ellipsis | none | true_ | false_
+    ) >>
+    (Node::NonTerminal {
+        sym: Symbol::Atom,
+        children: gvec![value],
+    })
+)));
+
+named!(atom<Span, Node>, alt!(atom_generator | atom_listcomprehension | atom_dictmaker | atom_strings | atom_rest));
