@@ -151,4 +151,45 @@ named!(atom_rest<Span, Node>, ws!(do_parse!(
     })
 )));
 
-named!(atom<Span, Node>, alt!(atom_generator | atom_listcomprehension | atom_dictmaker | atom_strings | atom_rest));
+named!(pub atom<Span, Node>, call!(atom_rest));
+
+named!(pub atom_expr<Span, Node>, ws!(do_parse!(
+    awaitkw: await_ >>
+    value: atom >>
+    trailers: many0!(trailer) >>
+    (Node::NonTerminal {
+        sym: Symbol::AtomExpr,
+        children: gvec![awaitkw, value, trailers],
+    })
+)));
+
+named!(trailer_args<Span, Node>, ws!(do_parse!(
+    left_par: lpar >>
+    args: opt!(arglist) >>
+    right_par: rpar >>
+    (Node::NonTerminal {
+        sym: Symbol::Trailer,
+        children: gvec![left_par, args, right_par],
+    })
+)));
+
+named!(trailer_index<Span, Node>, ws!(do_parse!(
+    left_sqb: lsqb >>
+    indices: opt!(subscriptlist) >>
+    right_sqb: rsqb >>
+    (Node::NonTerminal {
+        sym: Symbol::Trailer,
+        children: gvec![left_sqb, indices, right_sqb],
+    })
+)));
+
+named!(trailer_attr<Span, Node>, ws!(do_parse!(
+    dot_: dot >>
+    attr: name >>
+    (Node::NonTerminal {
+        sym: Symbol::Trailer,
+        children: gvec![dot_, attr],
+    })
+)));
+
+named!(pub trailer<Span, Node>, alt!(trailer_args | trailer_index | trailer_attr));

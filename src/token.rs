@@ -113,3 +113,4 @@ make_tag_parser!(nonlocal, "nonlocal", Token::Name);
 make_tag_parser!(none, "None", Token::Name);
 make_tag_parser!(true_, "True", Token::Name);
 make_tag_parser!(false_, "False", Token::Name);
+make_tag_parser!(await_, "await", Token::Name);
