@@ -233,3 +233,29 @@ named!(pub sliceop<Span, Node>, ws!(do_parse!(
         children: gvec![sep, value],
     })
 )));
+
+named!(pub exprlist<Span, Node>, ws!(do_parse!(
+    first: alt!(expr | star_expr) >>
+    rest: many0!(tuple!(comma, alt!(expr | star_expr))) >>
+    trailing_comma: opt!(comma) >>
+    (Node::NonTerminal {
+        sym: Symbol::Exprlist,
+        children: gvec![first, rest, trailing_comma],
+    })
+)));
+
+named!(pub testlist<Span, Node>, ws!(do_parse!(
+    first: test >>
+    rest: many0!(tuple!(comma, test)) >>
+    trailing_comma: opt!(comma) >>
+    (Node::NonTerminal {
+        sym: Symbol::Testlist,
+        children: gvec![first, rest, trailing_comma],
+    })
+)));
+
+macro_rules! tvec {
+    ($x:expr) => (map!($x, |res| vec![res]));
+    ($x:expr, $y:expr) => (map!(tuple!($x, $y), |res| vec![res.0, res.1]));
+    ($x:expr, $y:expr, $z:expr) => (map!(tuple!($x, $y, $z), |res| vec![res.0, res.1, res.2]));
+}
